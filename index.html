@@ -26797,8 +26797,18 @@ async function doRegister() {
     if (!userId) throw new Error('No se pudo obtener el ID de usuario');
     _sbToken = token; _sbUserId = userId;
     localStorage.setItem('aa_sb_session', JSON.stringify({token:_sbToken,userId:_sbUserId,name,role:_userRole}));
-    // Esperar que el trigger cree el perfil
+    // Hacer login para obtener token válido de larga duración
     await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      const loginData = await sbAuth('token?grant_type=password', {email, password:pass});
+      if (loginData.access_token) {
+        _sbToken = loginData.access_token;
+        _sbUserId = loginData.user?.id || _sbUserId;
+        const loginRole = loginData.user?.user_metadata?.role || _userRole;
+        _userRole = loginRole;
+        localStorage.setItem('aa_sb_session', JSON.stringify({token:_sbToken,userId:_sbUserId,name,role:loginRole,refresh:loginData.refresh_token}));
+      }
+    } catch(e) {}
     sendWelcomeEmail(email, name, pass);
     await enterApp(name);
   } catch(e) {
@@ -26860,6 +26870,8 @@ async function enterApp(userName) {
   // Verificar suspensión y suscripción usando RPC segura
   if (_sbUserId && _sbToken) {
     try {
+      // Refrescar token si es necesario
+      await sbRefreshToken().catch(()=>{});
       const rpcRes = await fetch(SUPA_URL + '/rest/v1/rpc/get_my_subscription', {
         method: 'POST',
         headers: { 
@@ -26870,8 +26882,6 @@ async function enterApp(userName) {
         body: JSON.stringify({})
       });
       const profile = await rpcRes.json();
-      // DEBUG TEMPORAL - mostrar resultado en pantalla
-      showLoginError('DEBUG: RPC=' + JSON.stringify(profile) + ' | status=' + rpcRes.status);
       if (profile && profile.suspended === true) {
         localStorage.removeItem('aa_sb_session');
         _sbToken = null; _sbUserId = null;
