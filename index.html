@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AsistApp — Sistema de Asistencia · Preceptoría</title>
+<title>AsistApp — Sistema de Asistencia Digital</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -5837,17 +5837,17 @@ var __async = (__this, __arguments, generator) => {
     function utf8CheckExtraBytes(self2, buf, p) {
       if ((buf[0] & 192) !== 128) {
         self2.lastNeed = 0;
-        return "�";
+        return " ";
       }
       if (self2.lastNeed > 1 && buf.length > 1) {
         if ((buf[1] & 192) !== 128) {
           self2.lastNeed = 1;
-          return "�";
+          return " ";
         }
         if (self2.lastNeed > 2 && buf.length > 2) {
           if ((buf[2] & 192) !== 128) {
             self2.lastNeed = 2;
-            return "�";
+            return " ";
           }
         }
       }
@@ -5873,7 +5873,7 @@ var __async = (__this, __arguments, generator) => {
     }
     function utf8End(buf) {
       var r = buf && buf.length ? this.write(buf) : "";
-      if (this.lastNeed) return r + "�";
+      if (this.lastNeed) return r + " ";
       return r;
     }
     function utf16Text(buf, i) {
@@ -23069,6 +23069,23 @@ var __async = (__this, __arguments, generator) => {
     color: white !important;
     transform: translateY(-1px);
   }
+
+  /* ── PAYWALL ── */
+  #paywall-screen-main { display:none; position:fixed; inset:0; background:linear-gradient(135deg,#0f172a,#1e293b); z-index:9999; align-items:center; justify-content:center; }
+  #paywall-screen-main.visible { display:flex; }
+  .paywall-card { background:rgba(255,255,255,0.05); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.1); border-radius:24px; padding:3rem 2.5rem; max-width:480px; width:90%; text-align:center; box-shadow:0 25px 50px rgba(0,0,0,0.4); }
+  .paywall-icon { font-size:3.5rem; margin-bottom:1rem; }
+  .paywall-title { font-family:'DM Serif Display',serif; font-size:2rem; color:#fff; margin-bottom:0.5rem; }
+  .paywall-sub { font-size:0.9rem; color:#94a3b8; margin-bottom:2rem; line-height:1.6; }
+  .paywall-price { background:rgba(15,155,142,0.15); border:1px solid rgba(15,155,142,0.3); border-radius:16px; padding:1.2rem; margin-bottom:2rem; }
+  .paywall-price-amount { font-size:2.5rem; font-weight:900; color:#1bc5b4; font-family:'DM Mono',monospace; }
+  .paywall-price-period { font-size:0.85rem; color:#94a3b8; font-weight:600; }
+  .paywall-features { text-align:left; margin-bottom:2rem; }
+  .paywall-feature { display:flex; gap:10px; align-items:center; padding:6px 0; font-size:0.88rem; color:#cbd5e1; }
+  .paywall-feature span:first-child { color:#1bc5b4; font-size:1rem; }
+  .btn-paywall { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:1rem; background:linear-gradient(135deg,#0f9b8e,#0d7a70); color:white; font-family:'Nunito',sans-serif; font-weight:800; font-size:1rem; border:none; border-radius:12px; cursor:pointer; text-decoration:none; box-shadow:0 4px 20px rgba(15,155,142,0.4); transition:all 0.2s; margin-bottom:1rem; }
+  .btn-paywall:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(15,155,142,0.6); }
+  .paywall-logout { font-size:0.78rem; color:#475569; cursor:pointer; text-decoration:underline; margin-top:0.5rem; display:inline-block; }
 </style>
 </head>
 <body>
@@ -23077,7 +23094,7 @@ var __async = (__this, __arguments, generator) => {
 <div class="login-screen" id="login-screen">
   <div class="login-box">
     <div class="login-logo">📋 <span>Asist</span>App</div>
-    <div class="login-sub">Sistema de Asistencia · Preceptoría</div>
+    <div class="login-sub">Sistema de Asistencia Digital</div>
     <div class="login-tabs">
       <button class="login-tab active" id="tab-login" onclick="switchLoginTab('login')">Iniciar sesión</button>
       <button class="login-tab" id="tab-register" onclick="switchLoginTab('register')">Registrarse</button>
@@ -23147,7 +23164,7 @@ var __async = (__this, __arguments, generator) => {
 <div id="app-wrapper">
 
 <header>
-  <div class="logo">📋 <span>Asist</span>App <span class="logo-badge" id="logo-role-badge">DOCENTE</span></div>
+  <div class="logo">📋 <span>Asist</span>App <span class="logo-badge" id="logo-role-badge">PROFESOR</span></div>
   <nav>
     <button class="nav-btn active" onclick="showView('cursos',this)">🏫 Cursos</button>
     <button class="nav-btn" onclick="showView('nomina',this)">👥 Nómina</button>
@@ -23156,6 +23173,7 @@ var __async = (__this, __arguments, generator) => {
     <button class="nav-btn" onclick="showView('planilla',this)">📊 Planilla</button>
     <button class="nav-btn" id="nav-admin" onclick="showView('admin',this)" style="display:none;background:rgba(245,166,35,0.2);color:var(--gold)">⚙️ Admin</button>
     <span id="header-user" style="display:none;color:rgba(255,255,255,0.7);font-size:0.8rem;font-weight:700;padding:0 8px;align-items:center"></span>
+
     <button id="btn-logout" onclick="doLogout()" style="display:none">🚪 Salir</button>
   </nav>
 </header>
@@ -23189,19 +23207,45 @@ var __async = (__this, __arguments, generator) => {
       <h3>➕ Crear Nuevo Curso</h3>
     </div>
     <div class="form-body" id="nuevo-curso-form-body" style="display:block">
-      <div class="grid-2" style="margin-top:1rem">
-        <div class="field">
-          <label>Curso / División</label>
-          <input type="text" id="inp-curso-nombre" placeholder="Ej: 3° A" onkeydown="if(event.key==='Enter')addCurso()">
+      <!-- MODO PROFESOR -->
+      <div id="form-profesor" style="display:block">
+        <div class="grid-2" style="margin-top:1rem">
+          <div class="field">
+            <label>Curso / División</label>
+            <input type="text" id="inp-curso-nombre" placeholder="Ej: 3° A" onkeydown="if(event.key==='Enter')addCurso()">
+          </div>
+          <div class="field">
+            <label>Materia</label>
+            <input type="text" id="inp-curso-materia" placeholder="Ej: Matemática" onkeydown="if(event.key==='Enter')addCurso()">
+          </div>
         </div>
         <div class="field">
-          <label>Materia (opcional)</label>
-          <input type="text" id="inp-curso-materia" placeholder="Ej: Matemática" onkeydown="if(event.key==='Enter')addCurso()">
+          <label>Docente a cargo</label>
+          <input type="text" id="inp-curso-docente" placeholder="Ej: Prof. Ana Pérez" onkeydown="if(event.key==='Enter')addCurso()">
         </div>
       </div>
-      <div class="field">
-        <label>Docente a cargo</label>
-        <input type="text" id="inp-curso-docente" placeholder="Ej: Prof. Ana Pérez" onkeydown="if(event.key==='Enter')addCurso()">
+      <!-- MODO PRECEPTOR -->
+      <div id="form-preceptor" style="display:none">
+        <div class="grid-2" style="margin-top:1rem">
+          <div class="field">
+            <label>Curso / División</label>
+            <input type="text" id="inp-prec-nombre" placeholder="Ej: 3° A" onkeydown="if(event.key==='Enter')addCurso()">
+          </div>
+          <div class="field">
+            <label>Turno</label>
+            <select id="inp-prec-turno" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Nunito',sans-serif;font-size:0.95rem;background:var(--surface);color:var(--ink)">
+              <option value="">Seleccioná el turno</option>
+              <option value="Mañana">Mañana</option>
+              <option value="Tarde">Tarde</option>
+              <option value="Noche">Noche</option>
+              <option value="Vespertino">Vespertino</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Preceptor/a a cargo</label>
+          <input type="text" id="inp-prec-docente" placeholder="Ej: Prof. García" onkeydown="if(event.key==='Enter')addCurso()">
+        </div>
       </div>
       <button class="btn btn-primary btn-full" onclick="addCurso()">🏫 Crear Curso</button>
     </div>
@@ -23219,13 +23263,33 @@ var __async = (__this, __arguments, generator) => {
       <label>Curso / División</label>
       <input type="text" id="edit-curso-nombre" placeholder="Ej: 3° A">
     </div>
-    <div class="field">
-      <label>Materia (opcional)</label>
-      <input type="text" id="edit-curso-materia" placeholder="Ej: Matemática">
+    <!-- MODO PROFESOR -->
+    <div id="edit-form-profesor">
+      <div class="field">
+        <label>Materia</label>
+        <input type="text" id="edit-curso-materia" placeholder="Ej: Matemática">
+      </div>
+      <div class="field">
+        <label>Docente a cargo</label>
+        <input type="text" id="edit-curso-docente" placeholder="Ej: Prof. Ana Pérez">
+      </div>
     </div>
-    <div class="field">
-      <label>Docente a cargo</label>
-      <input type="text" id="edit-curso-docente" placeholder="Ej: Prof. Ana Pérez">
+    <!-- MODO PRECEPTOR -->
+    <div id="edit-form-preceptor" style="display:none">
+      <div class="field">
+        <label>Turno</label>
+        <select id="edit-prec-turno" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Nunito',sans-serif;font-size:0.95rem;background:var(--surface);color:var(--ink)">
+          <option value="">Seleccioná el turno</option>
+          <option value="Mañana">Mañana</option>
+          <option value="Tarde">Tarde</option>
+          <option value="Noche">Noche</option>
+          <option value="Vespertino">Vespertino</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Preceptor/a a cargo</label>
+        <input type="text" id="edit-prec-docente" placeholder="Ej: Prof. García">
+      </div>
     </div>
     <div style="display:flex;gap:10px;margin-top:1.2rem">
       <button class="btn btn-secondary" style="flex:1" onclick="closeEditCurso()">Cancelar</button>
@@ -23741,14 +23805,25 @@ function buildBar(cid) {
 
 // ─── CURSOS ───
 function addCurso() {
-  const nombre  = document.getElementById('inp-curso-nombre').value.trim();
-  const materia = document.getElementById('inp-curso-materia').value.trim();
-  const docente = document.getElementById('inp-curso-docente').value.trim();
-  if (!nombre) { showToast('⚠ Ingresá el nombre del curso'); return; }
+  let nombre, materia, docente;
+  if (isPreceptor()) {
+    nombre  = document.getElementById('inp-prec-nombre').value.trim();
+    const turno = document.getElementById('inp-prec-turno').value;
+    materia = turno; // guardamos turno en campo materia
+    docente = document.getElementById('inp-prec-docente').value.trim();
+    if (!nombre) { showToast('⚠ Ingresá el curso / división'); return; }
+    ['inp-prec-nombre','inp-prec-docente'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('inp-prec-turno').value = '';
+  } else {
+    nombre  = document.getElementById('inp-curso-nombre').value.trim();
+    materia = document.getElementById('inp-curso-materia').value.trim();
+    docente = document.getElementById('inp-curso-docente').value.trim();
+    if (!nombre) { showToast('⚠ Ingresá el nombre del curso'); return; }
+    ['inp-curso-nombre','inp-curso-materia','inp-curso-docente'].forEach(i=>document.getElementById(i).value='');
+  }
   const color = PALETTE[cursos.length % PALETTE.length];
-  const newC  = { id: genId(), nombre, materia, docente, color };
+  const newC  = { id: genId(), nombre, materia, docente, color, rol: _userRole };
   cursos.push(newC);
-  ['inp-curso-nombre','inp-curso-materia','inp-curso-docente'].forEach(i=>document.getElementById(i).value='');
   renderCursosGrid();
   showToast('✅ Curso creado: ' + nombre);
   try { sbSaveCurso(newC); } catch(e) {}
@@ -23804,10 +23879,16 @@ function closeEditCurso() {
 
 async function saveEditCurso() {
   if (!_editCursoId) return;
-  const nombre  = document.getElementById('edit-curso-nombre').value.trim();
-  const materia = document.getElementById('edit-curso-materia').value.trim();
-  const docente = document.getElementById('edit-curso-docente').value.trim();
+  const nombre = document.getElementById('edit-curso-nombre').value.trim();
   if (!nombre) { showToast('⚠ El nombre del curso es obligatorio'); return; }
+  let materia, docente;
+  if (isPreceptor()) {
+    materia = document.getElementById('edit-prec-turno').value;
+    docente = document.getElementById('edit-prec-docente').value.trim();
+  } else {
+    materia = document.getElementById('edit-curso-materia').value.trim();
+    docente = document.getElementById('edit-curso-docente').value.trim();
+  }
   const c = getCurso(_editCursoId); if (!c) return;
   c.nombre  = nombre;
   c.materia = materia;
@@ -24194,10 +24275,32 @@ function previewQRsSelected() {
     <div class="grid">${cardsHTML}</div>
     <div class="footer">
       <span style="font-family:'DM Serif Display',Georgia,serif;font-size:0.95rem;color:#1a1a2e">Asist<span style="color:#1bc5b4">App</span></span>
-      <span>Sistema de Asistencia · Preceptoría</span>
+      <span>Sistema de Asistencia Digital</span>
       <span>Desarrollado por &nbsp;<span style="color:#0f9b8e;font-weight:700;text-transform:uppercase;font-family:'Century Gothic',sans-serif">DIGITAL SHOP</span></span>
     </div>
   </div>
+
+<!-- ═══ PAYWALL ═══ -->
+<div id="paywall-screen">
+  <div class="paywall-card">
+    <div class="paywall-icon">🔐</div>
+    <div class="paywall-title">AsistApp</div>
+    <div class="paywall-sub" id="paywall-msg">Para continuar usando AsistApp necesitás activar tu suscripción mensual.</div>
+    <div class="paywall-price">
+      <div class="paywall-price-amount">$4.999</div>
+      <div class="paywall-price-period">por mes · Se renueva automáticamente</div>
+    </div>
+    <div class="paywall-features">
+      <div class="paywall-feature"><span>✅</span><span>Registro de asistencia con QR</span></div>
+      <div class="paywall-feature"><span>✅</span><span>Informes y exportación Word/PDF</span></div>
+      <div class="paywall-feature"><span>✅</span><span>Panel Docente y Preceptor</span></div>
+      <div class="paywall-feature"><span>✅</span><span>Notificaciones WhatsApp a familias</span></div>
+      <div class="paywall-feature"><span>✅</span><span>Datos guardados en la nube</span></div>
+    </div>
+    <a id="btn-suscribir" href="#" target="_blank" class="btn-paywall">💳 Suscribirme ahora con Mercado Pago</a>
+    <div><span class="paywall-logout" onclick="doLogout()">Cerrar sesión</span></div>
+  </div>
+</div>
 </body>
 </html>`;
 
@@ -24375,7 +24478,7 @@ function printQRs() {
     .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
     .footer { margin-top: 1.5rem; border-top: 1px solid #e0e0e0; padding-top: 8px; text-align: center; font-size: 10px; color: #9ca3af; font-family: 'Nunito', sans-serif; }
     .footer strong { color: #0f9b8e; text-transform: uppercase; letter-spacing: 0.5px; }
-    @media print { @page { margin: 1cm; } }
+    @media print { @page { margin: 1cm; size: A4 portrait; } body { -webkit-print-color-adjust: exact; } }
   </style>
 </head>
 <body>
@@ -24383,7 +24486,7 @@ function printQRs() {
   <div class="header">
     <div>
       <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.55rem;color:#1a1a2e;letter-spacing:-0.5px;line-height:1.1">📋 Asist<span style="color:#1bc5b4">App</span></div>
-      <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:#9ca3af;text-transform:uppercase;letter-spacing:2px;margin-top:2px">Sistema de Asistencia · Preceptoría</div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:#9ca3af;text-transform:uppercase;letter-spacing:2px;margin-top:2px">Sistema de Asistencia Digital</div>
     </div>
     <div class="header-right">
       <strong>${cursoNombre}</strong>
@@ -24393,7 +24496,7 @@ function printQRs() {
   <div class="grid">${cardsHTML}</div>
   <div style="margin-top:2rem;border-top:1px solid #e0e0e0;padding-top:10px;display:flex;align-items:center;justify-content:space-between;font-family:'Raleway',sans-serif;font-size:0.82rem;color:#9ca3af;letter-spacing:0.3px;">
     <span style="font-family:'DM Serif Display',Georgia,serif;font-size:0.95rem;color:#1a1a2e;letter-spacing:-0.3px;">Asist<span style="color:#1bc5b4;">App</span></span>
-    <span>Sistema de Asistencia · Preceptoría</span>
+    <span>Sistema de Asistencia Digital</span>
     <span>Desarrollado por &nbsp;<span style="color:#0f9b8e;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;font-size:0.85rem;">DIGITAL SHOP</span></span>
   </div>
 </div>
@@ -24401,6 +24504,28 @@ function printQRs() {
   // Esperar a que las fuentes carguen antes de imprimir
   document.fonts.ready.then(function(){ window.print(); });
 <\/script>
+
+<!-- ═══ PAYWALL ═══ -->
+<div id="paywall-screen">
+  <div class="paywall-card">
+    <div class="paywall-icon">🔐</div>
+    <div class="paywall-title">AsistApp</div>
+    <div class="paywall-sub" id="paywall-msg">Para continuar usando AsistApp necesitás activar tu suscripción mensual.</div>
+    <div class="paywall-price">
+      <div class="paywall-price-amount">$4.999</div>
+      <div class="paywall-price-period">por mes · Se renueva automáticamente</div>
+    </div>
+    <div class="paywall-features">
+      <div class="paywall-feature"><span>✅</span><span>Registro de asistencia con QR</span></div>
+      <div class="paywall-feature"><span>✅</span><span>Informes y exportación Word/PDF</span></div>
+      <div class="paywall-feature"><span>✅</span><span>Panel Docente y Preceptor</span></div>
+      <div class="paywall-feature"><span>✅</span><span>Notificaciones WhatsApp a familias</span></div>
+      <div class="paywall-feature"><span>✅</span><span>Datos guardados en la nube</span></div>
+    </div>
+    <a id="btn-suscribir" href="#" target="_blank" class="btn-paywall">💳 Suscribirme ahora con Mercado Pago</a>
+    <div><span class="paywall-logout" onclick="doLogout()">Cerrar sesión</span></div>
+  </div>
+</div>
 </body>
 </html>`;
 
@@ -24517,7 +24642,7 @@ function showScanName(fullName, statusText, type) {
   const parts = fullName.split(',');
   const apellido = parts[0]?.trim() || fullName;
   const nombre   = parts[1]?.trim() || '';
-  nameEl.innerHTML = `<span style="color:var(--slate)">${apellido}</span>${nombre ? '<br><span style="font-size:1.4rem;color:#6b7280">'+nombre+'</span>' : ''}`;
+  nameEl.innerHTML = `<span style="color:var(--slate)">${apellido}</span>${nombre ? '<span style="font-size:1.4rem;color:#6b7280;display:block;margin-top:-2px;line-height:1.1">'+nombre+'</span>' : ''}`;
   const colors = { ok: 'var(--teal)', dup: 'var(--gold)', error: 'var(--rose)' };
   statEl.textContent = statusText;
   statEl.style.color = colors[type] || 'var(--teal)';
@@ -24740,7 +24865,7 @@ function selectTurno(turno) {
 // ── Aplicar rol a la interfaz ──
 function applyRoleUI() {
   const badge = document.getElementById('logo-role-badge');
-  if (badge) badge.textContent = isPreceptor() ? 'PRECEPTOR' : 'DOCENTE';
+  if (badge) badge.textContent = isPreceptor() ? 'PRECEPTOR' : 'PROFESOR';
 
   // Mostrar/ocultar campos familia en nómina
   const famFields = document.getElementById('prec-family-fields');
@@ -24757,6 +24882,51 @@ function applyRoleUI() {
     cfgBtn.onclick = () => openPrecConfig();
     document.querySelector('nav').appendChild(cfgBtn);
   }
+
+  // Formularios diferenciados según rol
+  const formProfesor   = document.getElementById('form-profesor');
+  const formPreceptor  = document.getElementById('form-preceptor');
+  const editFormProf   = document.getElementById('edit-form-profesor');
+  const editFormPrec   = document.getElementById('edit-form-preceptor');
+  if (formProfesor)  formProfesor.style.display  = isPreceptor() ? 'none' : 'block';
+  if (formPreceptor) formPreceptor.style.display = isPreceptor() ? 'block' : 'none';
+  if (editFormProf)  editFormProf.style.display  = isPreceptor() ? 'none' : 'block';
+  if (editFormPrec)  editFormPrec.style.display  = isPreceptor() ? 'block' : 'none';
+}
+
+
+// ── Cambio de rol desde el header ──
+function updateToggleRoleBtn() {
+  const btn = document.getElementById('btn-toggle-role');
+  if (!btn) return;
+  btn.style.display = 'inline-flex';
+  btn.style.alignItems = 'center';
+  btn.style.gap = '5px';
+  if (isPreceptor()) {
+    btn.innerHTML = '👩‍🏫 Modo Profesor';
+    btn.style.background = 'rgba(124,58,237,0.25)';
+    btn.style.borderColor = 'rgba(167,139,250,0.5)';
+    btn.style.color = '#a78bfa';
+  } else {
+    btn.innerHTML = '📋 Modo Preceptor';
+    btn.style.background = 'rgba(15,155,142,0.2)';
+    btn.style.borderColor = 'rgba(15,155,142,0.4)';
+    btn.style.color = '#1bc5b4';
+  }
+}
+
+function toggleRole() {
+  const newRole = isPreceptor() ? 'docente' : 'preceptor';
+  selectRole(newRole);
+  applyRoleUI();
+  updateToggleRoleBtn();
+  // Recargar cursos filtrados por nuevo rol
+  loadAllData().then(() => {
+    renderCursosGrid();
+    syncSelects();
+  });
+  const label = isPreceptor() ? 'Preceptor/a' : 'Profesor';
+  showToast('✅ Modo ' + label + ' activado');
 }
 
 // ── Guardar rol en registro ──
@@ -25629,7 +25799,7 @@ async function exportWordReport() {
             new TextRun({text:'Asist',bold:false,size:56,color:C.white,font:'Georgia'}),
             new TextRun({text:'App',bold:false,size:56,color:'1bc5b4',font:'Georgia'}),
           ]}),
-          new Paragraph({ alignment:AlignmentType.CENTER, spacing:{before:60}, children:[new TextRun({text:'Sistema de Asistencia · Preceptoría',size:22,color:'C8F0ED',font:'Arial'})] }),
+          new Paragraph({ alignment:AlignmentType.CENTER, spacing:{before:60}, children:[new TextRun({text:'Sistema de Asistencia Digital',size:22,color:'C8F0ED',font:'Arial'})] }),
         ]
       })] }),
       new TableRow({ children:[new TableCell({ borders:noBorders, shading:{fill:C.slate,type:ShadingType.CLEAR}, margins:{top:160,bottom:160,left:300,right:300},
@@ -25796,7 +25966,7 @@ async function exportWordReport() {
           children:[
             new TextRun({text:'Asist',size:18,color:C.ink,font:'Georgia'}),
             new TextRun({text:'App',size:18,color:'1bc5b4',font:'Georgia'}),
-            new TextRun({text:'  ·  Sistema de Asistencia · Preceptoría  ·  Desarrollado por ',size:16,color:C.gray,font:'Arial'}),
+            new TextRun({text:'  ·  Sistema de Asistencia Digital  ·  Desarrollado por ',size:16,color:C.gray,font:'Arial'}),
             new TextRun({text:'DIGITAL SHOP',size:18,color:'0F9B8E',bold:true,font:'Century Gothic'}),
           ]
         }),
@@ -25921,7 +26091,7 @@ async function exportWordInforme() {
             new TextRun({text:'Asist',bold:false,size:52,color:C.white,font:'Georgia'}),
             new TextRun({text:'App',bold:true,size:52,color:'C8F0ED',font:'Georgia'}),
           ]}),
-          new Paragraph({ alignment:AlignmentType.CENTER, spacing:{before:60}, children:[new TextRun({text:'Sistema de Asistencia · Preceptoría',size:22,color:'C8F0ED',font:'Arial'})] }),
+          new Paragraph({ alignment:AlignmentType.CENTER, spacing:{before:60}, children:[new TextRun({text:'Sistema de Asistencia Digital',size:22,color:'C8F0ED',font:'Arial'})] }),
         ]
       })] }),
       new TableRow({ children:[new TableCell({ borders:noBorders, shading:{fill:C.slate,type:ShadingType.CLEAR}, margins:{top:160,bottom:160,left:300,right:300},
@@ -26075,7 +26245,7 @@ async function exportWordInforme() {
           children:[
             new TextRun({text:'Asist',size:18,color:C.ink,font:'Georgia'}),
             new TextRun({text:'App',size:18,color:'1bc5b4',font:'Georgia'}),
-            new TextRun({text:`  ·  Sistema de Asistencia · Preceptoría  ·  `,size:16,color:C.gray,font:'Arial'}),
+            new TextRun({text:`  ·  Sistema de Asistencia Digital  ·  `,size:16,color:C.gray,font:'Arial'}),
             new TextRun({text:'DIGITAL SHOP',size:18,color:'0F9B8E',bold:true,font:'Century Gothic'}),
             new TextRun({text:`  ·  ${new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'})}`,size:16,color:C.gray,font:'Arial'}),
           ]
@@ -26257,7 +26427,7 @@ function exportReportCSV() {
 }
 
 function buildPrintHeader(cursoNombre, docenteStr, periodoStr, subtitleStr) {
-  const sub = subtitleStr || 'Sistema de Asistencia · Preceptoría';
+  const sub = subtitleStr || 'Sistema de Asistencia Digital';
   return `
     <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #0f9b8e;padding-bottom:14px;margin-bottom:1.4rem;">
       <div style="display:flex;align-items:center;gap:10px;">
@@ -26279,7 +26449,7 @@ function buildPrintFooter() {
   const now = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
   return `<div style="$margin-top:2rem;border-top:1px solid #e0e0e0;padding-top:10px;display:flex;align-items:center;justify-content:space-between;font-family:'Raleway',sans-serif;font-size:0.82rem;color:#9ca3af;letter-spacing:0.3px;">
     <span style="font-family:'DM Serif Display',Georgia,serif;font-size:0.95rem;color:#1a1a2e;letter-spacing:-0.3px;">Asist<span style="color:#1bc5b4;">App</span></span>
-    <span>Sistema de Asistencia · Preceptoría</span>
+    <span>Sistema de Asistencia Digital</span>
     <span>Desarrollado por &nbsp;<span style="color:#0f9b8e;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;font-size:0.85rem;">DIGITAL SHOP</span> &nbsp;·&nbsp; ${now}</span>
   </div>`;
 }
@@ -26419,25 +26589,41 @@ function beep(type) {
       o.stop(ctx.currentTime + start + dur + 0.02);
     };
 
-    if (type === 'ok') {
-      // Original ascendente, volumen máximo
-      tone(1400, 0,    0.05, 1.0);
-      tone(1800, 0.05, 0.18, 1.0);
-    } else if (type === 'dup') {
-      // Duplicado: dos bips medios
-      tone(700, 0,    0.09, 0.9);
-      tone(700, 0.13, 0.09, 0.9);
-    } else {
-      // Error: bip grave descendente
+    // Compresor para maximizar volumen percibido
+    const compressor = ctx.createDynamicsCompressor();
+    compressor.threshold.setValueAtTime(-24, ctx.currentTime);
+    compressor.knee.setValueAtTime(3, ctx.currentTime);
+    compressor.ratio.setValueAtTime(20, ctx.currentTime);
+    compressor.attack.setValueAtTime(0, ctx.currentTime);
+    compressor.release.setValueAtTime(0.1, ctx.currentTime);
+    compressor.connect(ctx.destination);
+
+    const toneC = (freq, start, dur, vol, shape='square') => {
       const o = ctx.createOscillator();
       const g = ctx.createGain();
-      o.connect(g); g.connect(ctx.destination);
-      o.type = 'sawtooth';
-      o.frequency.setValueAtTime(400, ctx.currentTime);
-      o.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.35);
-      g.gain.setValueAtTime(1.0, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
-      o.start(ctx.currentTime); o.stop(ctx.currentTime + 0.37);
+      o.connect(g); g.connect(compressor);
+      o.type = shape;
+      o.frequency.setValueAtTime(freq, ctx.currentTime + start);
+      g.gain.setValueAtTime(vol, ctx.currentTime + start);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + dur);
+      o.start(ctx.currentTime + start);
+      o.stop(ctx.currentTime + start + dur + 0.02);
+    };
+
+    if (type === 'ok') {
+      // Pitido escáner industrial - triple capa máximo volumen
+      toneC(1000, 0,    0.04, 2.0, 'square');
+      toneC(1800, 0.05, 0.08, 2.0, 'square');
+      toneC(2200, 0.14, 0.22, 2.0, 'square');
+      toneC(1000, 0,    0.04, 2.0, 'sawtooth'); // capa extra volumen
+      toneC(2200, 0.14, 0.22, 2.0, 'sawtooth');
+    } else if (type === 'dup') {
+      toneC(600, 0,    0.12, 1.5, 'square');
+      toneC(600, 0.18, 0.12, 1.5, 'square');
+      toneC(600, 0.36, 0.12, 1.5, 'square');
+    } else {
+      toneC(400, 0,    0.15, 2.0, 'sawtooth');
+      toneC(200, 0.16, 0.25, 2.0, 'sawtooth');
     }
     setTimeout(() => ctx.close && ctx.close(), 800);
   } catch(e) {}
@@ -26452,9 +26638,9 @@ function showToast(msg) {
 // ════════════════════════════════════════
 // SUPABASE CONFIG
 // ════════════════════════════════════════
-const SUPA_URL    = 'https://iqhjotpdgtyfbsboolht.supabase.co';
+const SUPA_URL    = 'https://mcdvbxjdvgmkvasuzwpw.supabase.co';
 const ADMIN_EMAIL = 'soydigitalshop@gmail.com';
-const SUPA_KEY    = 'sb_publishable_46jAgsZbpTfa8lER1vbP5Q_i3HKamHh';
+const SUPA_KEY    = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jZHZieGpkdmdta3Zhc3V6d3B3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNzc2MTUsImV4cCI6MjA4ODY1MzYxNX0.ReRJLNcFEhIvjsEs2t7LEuJWjcEHkoIfYG_63Lwipns';
 
 async function sbFetch(path, options={}) {
   const url = SUPA_URL + '/rest/v1/' + path;
@@ -26576,7 +26762,9 @@ async function doLogin() {
       showLoginError('🚫 Tu cuenta fue suspendida. Contactá al administrador: soydigitalshop@gmail.com');
       return;
     }
-    localStorage.setItem('aa_sb_session', JSON.stringify({token:_sbToken,userId:_sbUserId,name:data.user.user_metadata?.name||email,refresh:data.refresh_token}));
+    const loginRole = data.user.user_metadata?.role || localStorage.getItem('aa_role') || 'docente';
+    _userRole = loginRole;
+    localStorage.setItem('aa_sb_session', JSON.stringify({token:_sbToken,userId:_sbUserId,name:data.user.user_metadata?.name||email,refresh:data.refresh_token,role:loginRole}));
     await enterApp(data.user.user_metadata?.name || email);
   } catch(e) {
     showLoginError('❌ ' + (e.message.includes('Invalid')||e.message.includes('invalid') ? 'Email o contraseña incorrectos' : e.message));
@@ -26608,19 +26796,41 @@ async function doRegister() {
     }
     if (!userId) throw new Error('No se pudo obtener el ID de usuario');
     _sbToken = token; _sbUserId = userId;
-    localStorage.setItem('aa_sb_session', JSON.stringify({token:_sbToken,userId:_sbUserId,name}));
-    try { await sbFetch('profiles', {method:'POST',body:{id:_sbUserId,name},prefer:'return=minimal'}); } catch(e) {}
+    localStorage.setItem('aa_sb_session', JSON.stringify({token:_sbToken,userId:_sbUserId,name,role:_userRole}));
+    // Esperar que el trigger cree el perfil
+    await new Promise(resolve => setTimeout(resolve, 1500));
     sendWelcomeEmail(email, name, pass);
     await enterApp(name);
   } catch(e) {
     const msg = e.message||'';
-    showLoginError('❌ ' + (msg.includes('already')||msg.includes('registered') ? 'Ese email ya está registrado' : msg || 'Error al crear la cuenta'));
+    if (msg.includes('already')||msg.includes('registered')) {
+      // Email ya existe — intentar login y mostrar paywall
+      try {
+        const login = await sbAuth('token?grant_type=password', {email, password:pass});
+        const token = login.access_token; const userId = login.user?.id;
+        if (token && userId) {
+          _sbToken = token; _sbUserId = userId;
+          localStorage.setItem('aa_sb_session', JSON.stringify({token,userId,name}));
+          await enterApp(name);
+        } else {
+          showLoginError('⚠ Ese email ya tiene una cuenta. Iniciá sesión con tu contraseña.');
+          switchLoginTab('login');
+          document.getElementById('login-user').value = email;
+        }
+      } catch(e2) {
+        showLoginError('⚠ Ese email ya tiene una cuenta. Iniciá sesión con tu contraseña.');
+        switchLoginTab('login');
+        document.getElementById('login-user').value = email;
+      }
+    } else {
+      showLoginError('❌ ' + (msg || 'Error al crear la cuenta'));
+    }
   } finally { setLoginLoading(false); }
 }
 
 function sendWelcomeEmail(email, name, pass) {
   if (typeof emailjs === 'undefined') return;
-  emailjs.send('asistapp_service','asistapp_welcome',{to_email:email,to_name:name,user_email:email,user_pass:pass,app_url:'https://digitalshop-app.github.io/AsistApp/'}).catch(()=>{});
+  emailjs.send('asistapp_service','asistapp_welcome',{to_email:email,to_name:name,user_email:email,user_pass:pass,app_url:'https://digitalshop-app.github.io/AsistApp-Preceptor/'}).catch(()=>{});
 }
 
 // ─── EDIT STUDENT ───
@@ -26646,24 +26856,55 @@ async function saveEditStudent() {
 }
 
 async function enterApp(userName) {
-  // Verificar suspensión también al retomar sesión guardada
-  if (_sbUserId) {
+  console.log("enterApp called for:", userName, "userId:", _sbUserId);
+  // Verificar suspensión y suscripción usando RPC segura
+  if (_sbUserId && _sbToken) {
     try {
-      const profileRes = await fetch(SUPA_URL + '/rest/v1/profiles?id=eq.' + _sbUserId + '&select=suspended', {
-        headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + _sbToken }
+      const rpcRes = await fetch(SUPA_URL + '/rest/v1/rpc/get_my_subscription', {
+        method: 'POST',
+        headers: { 
+          'apikey': SUPA_KEY, 
+          'Authorization': 'Bearer ' + _sbToken,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
       });
-      const profileData = await profileRes.json();
-      if (profileData && profileData[0] && profileData[0].suspended === true) {
+      const profile = await rpcRes.json();
+      // DEBUG TEMPORAL - mostrar resultado en pantalla
+      showLoginError('DEBUG: RPC=' + JSON.stringify(profile) + ' | status=' + rpcRes.status);
+      if (profile && profile.suspended === true) {
         localStorage.removeItem('aa_sb_session');
         _sbToken = null; _sbUserId = null;
-        showLoginError('🚫 Tu cuenta fue suspendida. Contactá al administrador: soydigitalshop@gmail.com');
+        showLoginError('\u{1F6AB} Tu cuenta fue suspendida. Contact\u00E1 al administrador: soydigitalshop@gmail.com');
         return;
       }
-    } catch(e) { /* si falla el chequeo, dejar pasar */ }
+      if (!profile || !profile.subscription_status) {
+        showPaywall(userName, false);
+        return;
+      }
+      const status = profile.subscription_status;
+      const expires = profile.subscription_expires_at ? new Date(profile.subscription_expires_at) : null;
+      const now = new Date();
+      const GRACE_DAYS = 5;
+      const isActive = status === 'active' && (!expires || expires >= now);
+      const isExpired = status === 'expired' || (status === 'active' && expires && expires < now);
+      let inGrace = false, graceDaysLeft = 0;
+      if (isExpired && expires) {
+        const diffDays = Math.floor((now - expires) / 86400000);
+        if (diffDays <= GRACE_DAYS) { inGrace = true; graceDaysLeft = GRACE_DAYS - diffDays; }
+      }
+      if (!isActive && !inGrace) { showPaywall(userName, isExpired); return; }
+      if (inGrace) {
+        const userEmail = _sbToken ? JSON.parse(atob(_sbToken.split('.')[1]))?.email || '' : '';
+        emailjs.send('asistapp_service', 'asistapp_grace', {to_email:userEmail,to_name:userName,days_left:graceDaysLeft,app_url:'https://digitalshop-app.github.io/AsistApp/'}).catch(()=>{});
+        showGraceModal(userName, graceDaysLeft);
+      }
+    } catch(e) { showPaywall(userName, false); return; }
   }
   document.getElementById('header-user').textContent = '👤 ' + userName;
   document.getElementById('header-user').style.display = 'inline-flex';
   document.getElementById('btn-logout').style.display  = 'inline-flex';
+  updateToggleRoleBtn();
   document.getElementById('login-screen').classList.add('hidden');
   document.getElementById('app-wrapper').classList.add('visible');
   const savedSession = localStorage.getItem('aa_sb_session');
@@ -26720,7 +26961,8 @@ async function loadAllData() {
       sbFetch(`students?user_id=eq.${_sbUserId}&order=created_at.asc`),
       sbFetch(`attendance?user_id=eq.${_sbUserId}`)
     ]);
-    cursos   = c.map(r => ({id:r.id,nombre:r.nombre,materia:r.materia||'',docente:r.docente||'',color:r.color||'#0f9b8e'}));
+    const todosLosCursos = c.map(r => ({id:r.id,nombre:r.nombre,materia:r.materia||'',docente:r.docente||'',color:r.color||'#0f9b8e',rol:r.rol||'docente'}));
+    cursos = todosLosCursos.filter(r => r.rol === _userRole);
     students = s.map(r => ({id:r.id,cursoId:r.curso_id,apellido:r.apellido||'',nombre:r.nombre||'',full:r.full_name||'',emailAlumno:r.email_alumno||'',emailPadre:r.email_padre||'',emailFamilia:r.email_padre||'',whatsappFamilia:r.whatsapp_familia||''}));
     attendance = {};
     a.forEach(r => {
@@ -26731,7 +26973,7 @@ async function loadAllData() {
 }
 
 async function sbSaveCurso(c) {
-  await sbFetch('cursos',{method:'POST',prefer:'return=minimal',body:{id:c.id,user_id:_sbUserId,nombre:c.nombre,materia:c.materia||null,docente:c.docente||null,color:c.color}});
+  await sbFetch('cursos',{method:'POST',prefer:'return=minimal',body:{id:c.id,user_id:_sbUserId,nombre:c.nombre,materia:c.materia||null,docente:c.docente||null,color:c.color,rol:c.rol||_userRole}});
 }
 async function sbDeleteCurso(id) {
   await sbFetch(`cursos?id=eq.${id}&user_id=eq.${_sbUserId}`,{method:'DELETE',prefer:'return=minimal'});
@@ -27073,7 +27315,7 @@ function exportObsPDF() {
     ${obsHTML}
     <div style="margin-top:2rem;border-top:1px solid #e0e0e0;padding-top:10px;display:flex;align-items:center;justify-content:space-between;font-family:'Raleway',sans-serif;font-size:0.82rem;color:#9ca3af;letter-spacing:0.3px;">
       <span style="font-family:'DM Serif Display',Georgia,serif;font-size:0.95rem;color:#1a1a2e;letter-spacing:-0.3px;">Asist<span style="color:#1bc5b4;">App</span></span>
-      <span>Sistema de Asistencia · Preceptoría</span>
+      <span>Sistema de Asistencia Digital</span>
       <span>Desarrollado por &nbsp;<span style="color:#0f9b8e;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;font-size:0.85rem;">DIGITAL SHOP</span></span>
     </div>
   </div>
@@ -27189,8 +27431,8 @@ async function adminDeleteUser(userId, userName, userEmail) {
   el.innerHTML = `<div style="text-align:center;color:#9ca3af;padding:2rem;font-weight:600">⏳ Eliminando usuario ${userName}...</div>`;
 
   try {
-    const SUPABASE_URL = 'https://iqhjotpdgtyfbsboolht.supabase.co';
-    const SUPABASE_ANON = 'sb_publishable_46jAgsZbpTfa8lER1vbP5Q_i3HKamHh';
+    const SUPABASE_URL = 'https://mcdvbxjdvgmkvasuzwpw.supabase.co';
+    const SUPABASE_ANON = 'sb_publishable_np2oFvaG5a689y-5Uln5cg_Mhm36lx0';
     const res = await fetch(`${SUPABASE_URL}/functions/v1/delete-user`, {
       method: 'POST',
       headers: {
@@ -27232,6 +27474,44 @@ window.showView = function(id, btn) {
   if (id === 'admin') loadAdminUsers();
 };
 
+
+// ════════════════════════════════════════
+// PAYWALL
+// ════════════════════════════════════════
+const MP_PLAN_ID = '9344e4199be045509b8c6a0e3ffe3083';
+
+function showPaywall(userName, isExpired) {
+  const msg = document.getElementById('paywall-msg-main');
+  if (msg) {
+    msg.textContent = isExpired
+      ? `Tu suscripción venció, ${userName}. Renovála para seguir usando AsistApp.`
+      : `Bienvenido/a ${userName}. Activá tu suscripción para empezar a usar AsistApp.`;
+  }
+  // Generar link de suscripción con email del usuario
+  const email = encodeURIComponent(_sbToken ? JSON.parse(atob(_sbToken.split('.')[1]))?.email || '' : '');
+  const btn = document.getElementById('btn-suscribir-main');
+  if (btn) btn.href = `https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=${MP_PLAN_ID}&external_reference=${email}`;
+  const paywall = document.getElementById('paywall-screen-main');
+  if (paywall) paywall.classList.add('visible');
+}
+
+function showGraceModal(userName, daysLeft) {
+  // Crear modal si no existe
+  if (document.getElementById("grace-modal")) { document.getElementById("grace-modal").style.display="flex"; return; }
+  const mp_link = (() => { const e = encodeURIComponent(_sbToken ? JSON.parse(atob(_sbToken.split(".")[1]))?.email || "" : ""); return `https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=${MP_PLAN_ID}&external_reference=${e}`; })();
+  const el = document.createElement("div");
+  el.id = "grace-modal";
+  el.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9998;display:flex;align-items:center;justify-content:center;";
+  el.innerHTML = `<div style="background:#1e293b;border:1px solid rgba(251,191,36,0.4);border-radius:20px;padding:2.5rem 2rem;max-width:440px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div style="font-size:3rem;margin-bottom:1rem;">⏳</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:1.6rem;color:#fff;margin-bottom:0.5rem;">Período de gracia</div>
+    <p style="color:#cbd5e1;font-size:0.9rem;margin-bottom:1.5rem;line-height:1.6;">Hola <strong>${userName}</strong>, tu suscripción venció.<br>Tenés <strong style="color:#fbbf24;">${daysLeft} día${daysLeft!==1?"s":""} de gracia</strong> para renovarla.<br>Después de ese plazo no podrás ingresar.</p>
+    <a href="${mp_link}" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:0.9rem;background:linear-gradient(135deg,#0f9b8e,#0d7a70);color:white;font-weight:800;font-size:1rem;border-radius:12px;text-decoration:none;margin-bottom:1rem;">💳 Renovar suscripción</a>
+    <button onclick="document.getElementById('grace-modal').style.display='none'" style="background:none;border:none;color:#64748b;font-size:0.82rem;cursor:pointer;text-decoration:underline;">Continuar sin renovar</button>
+  </div>`;
+  document.body.appendChild(el);
+}
+
 // ════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════
@@ -27244,6 +27524,9 @@ window.showView = function(id, btn) {
     try {
       const s = JSON.parse(saved);
       _sbToken = s.token; _sbUserId = s.userId;
+      // Restaurar rol guardado
+      if (s.role) { _userRole = s.role; } 
+      else { const r = localStorage.getItem('aa_role'); if (r) _userRole = r; }
       await enterApp(s.name);
       return;
     } catch(e) { localStorage.removeItem('aa_sb_session'); }
@@ -27258,5 +27541,29 @@ window.showView = function(id, btn) {
   <img id="obs-lightbox-img" src="" alt="Imagen adjunta">
 </div>
 
+
+<!-- ═══ PAYWALL ═══ -->
+<div id="paywall-screen-main">
+  <div class="paywall-card">
+    <div class="paywall-icon">🔐</div>
+    <div class="paywall-title">AsistApp</div>
+    <div class="paywall-sub" id="paywall-msg-main">Para continuar usando AsistApp necesitás activar tu suscripción mensual.</div>
+    <div class="paywall-price">
+      <div class="paywall-price-amount">$4.999</div>
+      <div class="paywall-price-period">por mes · Se renueva automáticamente</div>
+    </div>
+    <div class="paywall-features">
+      <div class="paywall-feature"><span>✅</span><span>Registro de asistencia con QR</span></div>
+      <div class="paywall-feature"><span>✅</span><span>Informes y exportación Word/PDF</span></div>
+      <div class="paywall-feature"><span>✅</span><span>Panel Docente y Preceptor</span></div>
+      <div class="paywall-feature"><span>✅</span><span>Notificaciones WhatsApp a familias</span></div>
+      <div class="paywall-feature"><span>✅</span><span>Datos guardados en la nube</span></div>
+    </div>
+    <a id="btn-suscribir-main" href="#" target="_blank" class="btn-paywall">💳 Suscribirme ahora con Mercado Pago</a>
+    <div><span class="paywall-logout" onclick="doLogout()">Cerrar sesión</span></div>
+  </div>
+</div>
+<!-- Botón flotante cambio de rol -->
+<button id="btn-toggle-role" onclick="toggleRole()" title="Cambiar rol" style="display:none;position:fixed;bottom:24px;right:24px;z-index:1000;background:linear-gradient(135deg,#0f9b8e,#0d7a70);color:white;border:none;border-radius:50px;padding:10px 18px;font-size:0.78rem;font-weight:800;font-family:Nunito,sans-serif;cursor:pointer;box-shadow:0 4px 20px rgba(15,155,142,0.4);transition:all 0.2s;"></button>
 </body>
 </html>
