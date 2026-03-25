@@ -23071,7 +23071,7 @@ var __async = (__this, __arguments, generator) => {
   }
 
   /* ── PAYWALL ── */
-  #paywall-screen-main { display:none; position:fixed; inset:0; background:linear-gradient(135deg,#0f172a,#1e293b); z-index:9999; align-items:center; justify-content:center; }
+  #paywall-screen-main { display:none; position:fixed; inset:0; background:linear-gradient(135deg,#0f172a,#1e293b); z-index:99999; align-items:center; justify-content:center; }
   #paywall-screen-main.visible { display:flex; }
   .paywall-card { background:rgba(255,255,255,0.05); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.1); border-radius:24px; padding:3rem 2.5rem; max-width:480px; width:90%; text-align:center; box-shadow:0 25px 50px rgba(0,0,0,0.4); }
   .paywall-icon { font-size:3.5rem; margin-bottom:1rem; }
@@ -27491,11 +27491,13 @@ window.showView = function(id, btn) {
 const MP_PLAN_ID = '9344e4199be045509b8c6a0e3ffe3083';
 
 function showPaywall(userName, isExpired) {
+  // Limpiar sesión para evitar auto-login en próxima visita
+  localStorage.removeItem('aa_sb_session');
   const msg = document.getElementById('paywall-msg-main');
   if (msg) {
     msg.textContent = isExpired
       ? `Tu suscripción venció, ${userName}. Renovála para seguir usando AsistApp.`
-      : `Bienvenido/a ${userName}. Activá tu suscripción para empezar a usar AsistApp.`;
+      : `Bienvenido/a ${userName}. Para acceder a AsistApp activá tu suscripción mensual.`;
   }
   // Generar link de suscripción con email del usuario
   const email = encodeURIComponent(_sbToken ? JSON.parse(atob(_sbToken.split('.')[1]))?.email || '' : '');
