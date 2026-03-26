@@ -26867,29 +26867,24 @@ async function saveEditStudent() {
 
 async function enterApp(userName) {
   console.log("enterApp called for:", userName, "userId:", _sbUserId);
-  // Verificar suspensión y suscripción usando RPC segura
+  // Verificar suscripción consultando directamente la tabla profiles
   if (_sbUserId && _sbToken) {
     try {
-      // Refrescar token si es necesario
-      await sbRefreshToken().catch(()=>{});
-      const rpcRes = await fetch(SUPA_URL + '/rest/v1/rpc/get_my_subscription', {
-        method: 'POST',
-        headers: { 
-          'apikey': SUPA_KEY, 
-          'Authorization': 'Bearer ' + _sbToken,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({})
-      });
-      const profile = await rpcRes.json();
-      if (profile && profile.suspended === true) {
+      // Intentar refrescar token
+      const refreshed = await sbRefreshToken().catch(()=>false);
+      // Consultar perfil usando el token actualizado
+      const profileRes = await fetch(
+        SUPA_URL + '/rest/v1/profiles?id=eq.' + _sbUserId + '&select=suspended,subscription_status,subscription_expires_at',
+        { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + _sbToken } }
+      );
+      if (!profileRes.ok) { showPaywall(userName, false); return; }
+      const profileArr = await profileRes.json();
+      if (!profileArr || !profileArr.length) { showPaywall(userName, false); return; }
+      const profile = profileArr[0];
+      if (profile.suspended === true) {
         localStorage.removeItem('aa_sb_session');
         _sbToken = null; _sbUserId = null;
-        showLoginError('\u{1F6AB} Tu cuenta fue suspendida. Contact\u00E1 al administrador: soydigitalshop@gmail.com');
-        return;
-      }
-      if (!profile || !profile.subscription_status) {
-        showPaywall(userName, false);
+        showLoginError('🚫 Tu cuenta fue suspendida. Contactá al administrador: soydigitalshop@gmail.com');
         return;
       }
       const status = profile.subscription_status;
@@ -27493,6 +27488,11 @@ const MP_PLAN_ID = '9344e4199be045509b8c6a0e3ffe3083';
 function showPaywall(userName, isExpired) {
   // Limpiar sesión para evitar auto-login en próxima visita
   localStorage.removeItem('aa_sb_session');
+  // Ocultar app-wrapper para que el paywall sea visible
+  const appWrapper = document.getElementById('app-wrapper');
+  if (appWrapper) appWrapper.classList.remove('visible');
+  const loginScreen = document.getElementById('login-screen');
+  if (loginScreen) loginScreen.classList.add('hidden');
   const msg = document.getElementById('paywall-msg-main');
   if (msg) {
     msg.textContent = isExpired
