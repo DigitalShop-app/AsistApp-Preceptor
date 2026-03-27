@@ -26866,7 +26866,7 @@ async function saveEditStudent() {
 }
 
 async function enterApp(userName) {
-  console.log("enterApp called for:", userName, "userId:", _sbUserId);
+  console.log("[AsistApp] enterApp llamado para:", userName, "| userId:", _sbUserId, "| token:", _sbToken ? "OK" : "NULO");
   // Verificar suscripción consultando directamente la tabla profiles
   if (_sbUserId && _sbToken) {
     try {
@@ -26904,7 +26904,7 @@ async function enterApp(userName) {
         emailjs.send('asistapp_service', 'asistapp_grace', {to_email:userEmail,to_name:userName,days_left:graceDaysLeft,app_url:'https://digitalshop-app.github.io/AsistApp/'}).catch(()=>{});
         showGraceModal(userName, graceDaysLeft);
       }
-    } catch(e) { showPaywall(userName, false); return; }
+    } catch(e) { console.error('[AsistApp] Error en chequeo de suscripción:', e); showPaywall(userName, false); return; }
   }
   document.getElementById('header-user').textContent = '👤 ' + userName;
   document.getElementById('header-user').style.display = 'inline-flex';
@@ -27486,13 +27486,14 @@ window.showView = function(id, btn) {
 const MP_PLAN_ID = '9344e4199be045509b8c6a0e3ffe3083';
 
 function showPaywall(userName, isExpired) {
+  console.log('[AsistApp] showPaywall ejecutado para:', userName, '| expirado:', isExpired);
   // Limpiar sesión para evitar auto-login en próxima visita
   localStorage.removeItem('aa_sb_session');
-  // Ocultar app-wrapper para que el paywall sea visible
+  // Ocultar todo lo demás
   const appWrapper = document.getElementById('app-wrapper');
-  if (appWrapper) appWrapper.classList.remove('visible');
+  if (appWrapper) { appWrapper.classList.remove('visible'); appWrapper.style.display = 'none'; }
   const loginScreen = document.getElementById('login-screen');
-  if (loginScreen) loginScreen.classList.add('hidden');
+  if (loginScreen) { loginScreen.classList.add('hidden'); loginScreen.style.display = 'none'; }
   const msg = document.getElementById('paywall-msg-main');
   if (msg) {
     msg.textContent = isExpired
@@ -27503,8 +27504,14 @@ function showPaywall(userName, isExpired) {
   const email = encodeURIComponent(_sbToken ? JSON.parse(atob(_sbToken.split('.')[1]))?.email || '' : '');
   const btn = document.getElementById('btn-suscribir-main');
   if (btn) btn.href = `https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=${MP_PLAN_ID}&external_reference=${email}`;
+  // Mostrar paywall con style directo (más confiable que classList en algunos navegadores)
   const paywall = document.getElementById('paywall-screen-main');
-  if (paywall) paywall.classList.add('visible');
+  if (paywall) {
+    paywall.style.cssText = 'display:flex !important; position:fixed; inset:0; background:linear-gradient(135deg,#0f172a,#1e293b); z-index:99999; align-items:center; justify-content:center;';
+    console.log('[AsistApp] Paywall visible, rect:', JSON.stringify(paywall.getBoundingClientRect()));
+  } else {
+    console.error('[AsistApp] ERROR: paywall-screen-main no encontrado en el DOM');
+  }
 }
 
 function showGraceModal(userName, daysLeft) {
